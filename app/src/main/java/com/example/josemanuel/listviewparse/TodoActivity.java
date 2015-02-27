@@ -15,12 +15,13 @@ import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.PushService;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class TodoActivity extends Activity implements AdapterView.OnItemClickListener {
 
@@ -35,6 +36,9 @@ public class TodoActivity extends Activity implements AdapterView.OnItemClickLis
 
         Parse.initialize(this, "NUozCFi35BS24T93XpaXsEkIzEH9nUXz8a0eXTB8", "tChDAHWKDp1IsZkRzoc8Q6Cb1SLX0YOe91BNufot");
         ParseAnalytics.trackAppOpened(getIntent());
+
+        PushService.setDefaultPushCallback(this, TodoActivity.class);
+        ParseInstallation.getCurrentInstallation().saveInBackground();
 
 
         ParseObject.registerSubclass(Task.class);
