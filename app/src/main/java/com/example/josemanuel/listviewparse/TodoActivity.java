@@ -3,6 +3,7 @@ package com.example.josemanuel.listviewparse;
 import android.app.Activity;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +18,10 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.PushService;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +37,11 @@ public class TodoActivity extends Activity implements AdapterView.OnItemClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
 
+        //Parse.enableLocalDatastore(this);
+
         Parse.initialize(this, "NUozCFi35BS24T93XpaXsEkIzEH9nUXz8a0eXTB8", "tChDAHWKDp1IsZkRzoc8Q6Cb1SLX0YOe91BNufot");
         ParseAnalytics.trackAppOpened(getIntent());
+
 
         PushService.setDefaultPushCallback(this, TodoActivity.class);
         ParseInstallation.getCurrentInstallation().saveInBackground();
@@ -50,6 +56,20 @@ public class TodoActivity extends Activity implements AdapterView.OnItemClickLis
         mListView.setAdapter(mAdapter);
 
         mListView.setOnItemClickListener(this);
+
+
+        ParsePush.subscribeInBackground("", new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                } else {
+                    Log.e("com.parse.push", "failed to subscribe for push", e);
+                }
+            }
+        });
+
+
 
         updateData();
 
